@@ -1,0 +1,7 @@
+BasedOnStyle: LLVM
+IndentWidth: 4
+AlwaysBreakTemplateDeclarations: Yes
+ColumnLimit: 120
+AccessModifierOffset: -4
+SortIncludes: Never
+MaxEmptyLinesToKeep: 1
