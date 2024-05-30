@@ -98,10 +98,11 @@ bool lwnxRecvPacket(lwSerialPort* Serial, uint8_t CommandId, lwResponsePacket* R
 	lwnxInitResponsePacket(Response);
 
 	uint32_t timeoutTime = platformGetMillisecond() + TimeoutMs;
+        int32_t timeoutTimeSigned = static_cast<int32_t>(timeoutTime);
 	uint8_t byte = 0;
 	int32_t bytesRead = 0;
 
-	while ((platformGetMillisecond() < timeoutTime) && (bytesRead = Serial->readData(&byte, 1)) != -1) {
+	while ((platformGetMillisecond() < timeoutTimeSigned) && (bytesRead = Serial->readData(&byte, 1)) != -1) {
 		if (bytesRead > 0) {
 			if (lwnxParseData(Response, byte)) {
 				int8_t cmdId = Response->data[3];
