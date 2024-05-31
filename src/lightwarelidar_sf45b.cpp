@@ -164,7 +164,7 @@ void initializePointCloudMsg(sensor_msgs::PointCloud2 &msg, const std::string &f
 }
 
 int main(int argc, char **argv) {
-    ros::init(argc, argv, "sf45b");
+    ros::init(argc, argv, "lightwarelidar_sf45b");
 
     ros::NodeHandle n;
 
@@ -193,7 +193,7 @@ int main(int argc, char **argv) {
     if (maxPointsPerMsg < 1)
         maxPointsPerMsg = 1;
 
-    ROS_INFO("Starting SF45B node");
+    ROS_INFO("Starting lightwarelidar SF45B node");
 
     if (driverStart(&serial, portName.c_str(), baudRate) != 0) {
         ROS_ERROR("Failed to start driver");

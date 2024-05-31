@@ -29,7 +29,7 @@ add_library(platformLinux src/linux/platformLinux.cpp)
 add_library(serialPortLinux src/linux/lwSerialPortLinux.cpp)
 
 add_executable(sf40c src/sf40c.cpp)
-add_executable(sf45b src/sf45b.cpp)
+add_executable(lightwarelidar_sf45b src/lightwarelidar_sf45b.cpp)
 
 target_link_libraries(sf40c
   lwNx
@@ -38,7 +38,7 @@ target_link_libraries(sf40c
   ${catkin_LIBRARIES}
 )
 
-target_link_libraries(sf45b
+target_link_libraries(lightwarelidar_sf45b
   lwNx
   platformLinux
   serialPortLinux
@@ -52,7 +52,7 @@ target_link_libraries(sf45b
 
 install(
         TARGETS
-        sf45b
+        lightwarelidar_sf45b
         lwNx
         platformLinux
         serialPortLinux

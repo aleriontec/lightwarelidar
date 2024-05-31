@@ -24,7 +24,7 @@ The transformation frame.
 
 Offset applied to scan forward direction.
 
-## sf45b Node
+## lightwarelidar_sf45b Node
 
 This node interfaces with an SF45/B and passes point cloud data to the pointcloud topic.
 
