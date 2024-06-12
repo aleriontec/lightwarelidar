@@ -163,6 +163,19 @@ void initializePointCloudMsg(sensor_msgs::PointCloud2 &msg, const std::string &f
     msg.data = std::vector<uint8_t>(maxPointsPerMsg * 12);
 }
 
+void publishPointCloud(ros::Publisher &pointCloudPub, const std::vector<lwDistanceResult> &distanceResults, const std::string &frameId) {
+    sensor_msgs::PointCloud2 pointCloudMsg;
+    int numPoints = distanceResults.size();
+    initializePointCloudMsg(pointCloudMsg, frameId, numPoints);
+
+    for (int i = 0; i < numPoints; ++i) {
+        memcpy(&pointCloudMsg.data[i * 12], &distanceResults[i], sizeof(float) * 3);
+    }
+
+    pointCloudMsg.header.stamp = ros::Time::now();
+    pointCloudPub.publish(pointCloudMsg);
+}
+
 int main(int argc, char **argv) {
     ros::init(argc, argv, "sf45b");
 
@@ -178,7 +191,8 @@ int main(int argc, char **argv) {
     n.param(std::string("frame_id"), frameId, std::string("lidar_main_link"));
     std::string pclRawTopic;
     n.param(std::string("pcl_raw_topic"), pclRawTopic, std::string("/lidar_application/point_cloud_raw_v2"));
-
+    float scanWindowTime;
+    n.param(std::string("scan_window_time"), scanWindowTime, 0.5);
     ros::Publisher pointCloudPub = n.advertise<sensor_msgs::PointCloud2>(pclRawTopic, 10);
 
     lwSf45Params params;
@@ -205,31 +219,26 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    sensor_msgs::PointCloud2 pointCloudMsg;
-    initializePointCloudMsg(pointCloudMsg, frameId, maxPointsPerMsg);
-
-    int currentPoint = 0;
     std::vector<lwDistanceResult> distanceResults(maxPointsPerMsg);
+    auto startTime = std::chrono::steady_clock::now();
 
     while (ros::ok()) {
-
         lwDistanceResult distanceResult;
         int status = driverScan(serial, &distanceResult);
 
-        if (status == 0) {
-            continue;
-        } else {
-            distanceResults[currentPoint] = distanceResult;
-            ++currentPoint;
+        if (status != 0) {
+            distanceResults.push_back(distanceResult);
         }
 
-        if (currentPoint == maxPointsPerMsg) {
-            memcpy(&pointCloudMsg.data[0], &distanceResults[0], maxPointsPerMsg * 12);
+        auto currentTime = std::chrono::steady_clock::now();
+        std::chrono::duration<double> elapsedTime = currentTime - startTime;
 
-            pointCloudMsg.header.stamp = ros::Time::now();
-            pointCloudPub.publish(pointCloudMsg);
-
-            currentPoint = 0;
+        if (elapsedTime.count() >= scanWindowTime) {
+            if (!distanceResults.empty()) {
+                publishPointCloud(pointCloudPub, distanceResults, frameId);
+                distanceResults.clear();
+            }
+            startTime = std::chrono::steady_clock::now();
         }
 
         ros::spinOnce();
