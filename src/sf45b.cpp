@@ -192,7 +192,7 @@ int main(int argc, char **argv) {
     std::string pclRawTopic;
     n.param(std::string("pcl_raw_topic"), pclRawTopic, std::string("/lidar_application/point_cloud_raw_v2"));
     float scanWindowTime;
-    n.param(std::string("scan_window_time"), scanWindowTime, 0.5);
+    n.param(std::string("scan_window_time"), scanWindowTime, 0.5f);
     ros::Publisher pointCloudPub = n.advertise<sensor_msgs::PointCloud2>(pclRawTopic, 10);
 
     lwSf45Params params;
