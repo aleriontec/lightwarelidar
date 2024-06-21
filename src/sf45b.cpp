@@ -122,7 +122,7 @@ int driverScan(lwSerialPort *Serial, lwDistanceResult *DistanceResult) {
 
         float distance = distanceCm / 100.0f;
         float angle = angleHundredths / 100.0f;
-        float faceAngle = (angle - 90) * M_PI / 180.0;
+        float faceAngle = (angle + 180) * M_PI / 180.0;
 
         DistanceResult->x = distance * -cos(faceAngle);
         DistanceResult->y = distance * sin(faceAngle);
@@ -198,8 +198,8 @@ int main(int argc, char **argv) {
     lwSf45Params params;
     n.param(std::string("updateRate"), params.updateRate, 5000);
     n.param(std::string("cycleDelay"), params.cycleDelay, 5);
-    n.param(std::string("lowAngleLimit"), params.lowAngleLimit, -45.0f);
-    n.param(std::string("highAngleLimit"), params.highAngleLimit, 45.0f);
+    n.param(std::string("lowAngleLimit"), params.lowAngleLimit, -30.0f);
+    n.param(std::string("highAngleLimit"), params.highAngleLimit, 30.0f);
     validateParams(&params);
 
     int maxPointsPerMsg;
