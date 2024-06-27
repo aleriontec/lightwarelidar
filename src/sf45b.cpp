@@ -198,8 +198,8 @@ int main(int argc, char **argv) {
     lwSf45Params params;
     n.param(std::string("updateRate"), params.updateRate, 5000);
     n.param(std::string("cycleDelay"), params.cycleDelay, 5);
-    n.param(std::string("lowAngleLimit"), params.lowAngleLimit, -30.0f);
-    n.param(std::string("highAngleLimit"), params.highAngleLimit, 30.0f);
+    n.param(std::string("lowAngleLimit"), params.lowAngleLimit, -15.0f);
+    n.param(std::string("highAngleLimit"), params.highAngleLimit, 15.0f);
     validateParams(&params);
 
     int maxPointsPerMsg;
